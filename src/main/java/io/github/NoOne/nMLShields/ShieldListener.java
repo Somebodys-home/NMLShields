@@ -18,11 +18,9 @@ import java.util.UUID;
 
 public class ShieldListener implements Listener {
     private ShieldManager shieldManager;
-    private ItemSystem itemSystem;
 
     public ShieldListener(NMLShields nmlShields) {
         shieldManager = nmlShields.getShieldManager();
-        itemSystem = nmlShields.getItemSystem();
     }
 
     @EventHandler
@@ -32,9 +30,14 @@ public class ShieldListener implements Listener {
         ItemStack oldHand = player.getInventory().getItem(event.getPreviousSlot());
 
         if (shieldManager.isACustomShield(newHand)) {
-            shieldManager.addShieldStatsToPlayerStats(player, newHand);
+            if (ItemSystem.isItemUsable(newHand, player)) {
+                shieldManager.addShieldStatsToPlayerStats(player, newHand);
+            } else {
+                player.sendMessage("§c⚠ §nYou are too inexperienced for this item!§r§c ⚠");
+
+            }
         }
-        if (shieldManager.isACustomShield(oldHand)) {
+        if (shieldManager.isACustomShield(oldHand) && ItemSystem.isItemUsable(oldHand, player)) {
             shieldManager.removeShieldStatsFromPlayerStats(player, oldHand);
         }
     }
@@ -46,32 +49,50 @@ public class ShieldListener implements Listener {
 
         ClickType click = event.getClick();
         int rawSlot = event.getRawSlot();
-        ItemStack maybeShield = event.getCursor();
-//        player.sendMessage("click: " + click);
-//        player.sendMessage("raw slot: " + rawSlot);
-//        player.sendMessage("event slot: " + event.getSlot());
-//        player.sendMessage("cursor itemtype: " + maybeShield.getType());
-//        player.sendMessage("current item itemtype: " + event.getCurrentItem().getType());
 
-        if (click == ClickType.LEFT || click == ClickType.RIGHT || click == ClickType.CREATIVE) {
+        if ((click == ClickType.LEFT || click == ClickType.RIGHT || click == ClickType.CREATIVE) && (click != ClickType.SHIFT_LEFT || click != ClickType.SHIFT_RIGHT)) {
             if (shieldManager.isACustomShield(event.getCursor()) && rawSlot == 45) {
-                player.sendMessage("sneed (manually put into offhand)");
+                if (ItemSystem.isItemUsable(event.getCursor(), player)) {
+                    player.sendMessage("sneed (manually put into offhand)");
 //            shieldManager.addShieldStatsToPlayerStats(player, maybeShield);
-//            itemSystem.updateUnusableItemName(maybeShield, true);
+//            ItemSystem.updateUnusableItemName(maybeShield, true);
+                } else {
+                    event.setCancelled(true);
+                    player.sendMessage("§c⚠ §nYou are too inexperienced for this item!§r§c ⚠1");
+                }
             }
         } else if (click == ClickType.SHIFT_LEFT || click == ClickType.SHIFT_RIGHT) {
             if (shieldManager.isACustomShield(event.getCurrentItem()) && rawSlot != 45) {
-                player.sendMessage("sneed (shift clicked into offhand)");
+                if (ItemSystem.isItemUsable(event.getCurrentItem(), player)) {
+                    player.sendMessage("sneed (shift clicked into offhand)");
 //                shieldManager.addShieldStatsToPlayerStats(player, maybeShield);
-//                itemSystem.updateUnusableItemName(maybeShield, true);
+//                ItemSystem.updateUnusableItemName(maybeShield, true);
+                } else {
+                    event.setCancelled(true);
+                    player.sendMessage("§c⚠ §nYou are too inexperienced for this item!§r§c ⚠2");
+                }
             }
         } else if (click == ClickType.NUMBER_KEY) {
             if (shieldManager.isACustomShield(player.getInventory().getItem(event.getHotbarButton()))) {
-                player.sendMessage("sneed (num key clicked into offhand)");
+                if (ItemSystem.isItemUsable(player.getInventory().getItem(event.getHotbarButton()), player)) {
+                    player.sendMessage("sneed (num key clicked into offhand)");
+//                shieldManager.addShieldStatsToPlayerStats(player, maybeShield);
+//                ItemSystem.updateUnusableItemName(maybeShield, true);
+                } else {
+                    event.setCancelled(true);
+                    player.sendMessage("§c⚠ §nYou are too inexperienced for this item!§r§c ⚠3");
+                }
             }
         } else if (click == ClickType.SWAP_OFFHAND) {
             if (shieldManager.isACustomShield(event.getCurrentItem())) {
-                player.sendMessage("sneed (swap offhand)");
+                if (ItemSystem.isItemUsable(event.getCurrentItem(), player)) {
+                    player.sendMessage("sneed (swap offhand)");
+//                shieldManager.addShieldStatsToPlayerStats(player, maybeShield);
+//                ItemSystem.updateUnusableItemName(maybeShield, true);
+                } else {
+                    event.setCancelled(true);
+                    player.sendMessage("§c⚠ §nYou are too inexperienced for this item!§r§c ⚠4");
+                }
             }
         }
     }
@@ -82,8 +103,13 @@ public class ShieldListener implements Listener {
 //        if (event.getClickedInventory() == null) return;
 //
 //        ClickType click = event.getClick();
-//        int slot = event.getSlot();
-//        ItemStack shield = event.getCurrentItem();
+//        int rawSlot = event.getRawSlot();
+//
+//        player.sendMessage("click: " + click);
+//        player.sendMessage("raw slot: " + rawSlot);
+//        player.sendMessage("event slot: " + event.getSlot());
+//        player.sendMessage("cursor itemtype: " + event.getCursor().getType());
+//        player.sendMessage("current item itemtype: " + event.getCurrentItem().getType());
 //
 //        // Case 1: Direct left/right click to remove shield from offhand
 //        if ((click == ClickType.LEFT || click == ClickType.RIGHT || click == ClickType.CREATIVE) && slot == 40 && shieldManager.isACustomShield(shield)) {
@@ -93,7 +119,7 @@ public class ShieldListener implements Listener {
 //                // Only remove if the item is currently in offhand
 //                if (shield.equals(player.getInventory().getItemInOffHand())) {
 //                    shieldManager.removeShieldStatsFromPlayerStats(player, shield);
-//                    itemSystem.updateUnusableItemName(shield, true);
+//                    ItemSystem.updateUnusableItemName(shield, true);
 //                }
 //            }
 //        } else if (click == ClickType.NUMBER_KEY && slot == 40) { // Case 3: Hotkey swap shield out of offhand
@@ -107,16 +133,16 @@ public class ShieldListener implements Listener {
     public void shieldLevelCheck(PlayerItemHeldEvent event) {
         Player player = event.getPlayer();
         ItemStack heldItem = player.getInventory().getItem(event.getNewSlot());
-        boolean usable = itemSystem.isItemUsable(heldItem, player);
+        boolean usable = ItemSystem.isItemUsable(heldItem, player);
 
         if (heldItem == null || heldItem.getType() == Material.AIR) { return; }
         if (!heldItem.hasItemMeta()) { return; }
-        if (itemSystem.getItemTypeFromItemStack(heldItem) == null) { return; }
+        if (ItemSystem.getItemTypeFromItemStack(heldItem) == null) { return; }
         if (!usable) {
             player.sendMessage("§c⚠ §nYou are too inexperienced for this item!§r§c ⚠");
         }
 
-        itemSystem.updateUnusableItemName(heldItem, usable);
+        ItemSystem.updateUnusableItemName(heldItem, usable);
     }
 
 //    @EventHandler
@@ -125,36 +151,32 @@ public class ShieldListener implements Listener {
 //        if (event.getClickedInventory() == null) return;
 //
 //        ClickType click = event.getClick();
-//        if (click == ClickType.LEFT || click == ClickType.RIGHT) {
-//            if (event.getSlot() == 40) {
-//                ItemStack shield = event.getCursor();
+//        int rawSlot = event.getRawSlot();
+////        player.sendMessage("click: " + click);
+////        player.sendMessage("raw slot: " + rawSlot);
+////        player.sendMessage("event slot: " + event.getSlot());
+////        player.sendMessage("cursor itemtype: " + event.getCursor().getType());
+////        player.sendMessage("current item itemtype: " + event.getCurrentItem().getType());
 //
-//                if (shieldManager.isACustomShield(shield) && !itemSystem.isItemUsable(shield, player)) {
-//                    event.setCancelled(true);
-//                    player.sendMessage("§c⚠ §nYou are too inexperienced for this item!§r§c ⚠");
-//                    itemSystem.updateUnusableItemName(shield, false);
-//                }
+//        if (click == ClickType.LEFT || click == ClickType.RIGHT || click == ClickType.CREATIVE) {
+//            if (shieldManager.isACustomShield(event.getCursor()) && rawSlot == 45) {
+//                player.sendMessage("sneed (manually put into offhand)");
+////            shieldManager.addShieldStatsToPlayerStats(player, maybeShield);
+////            ItemSystem.updateUnusableItemName(maybeShield, true);
 //            }
 //        } else if (click == ClickType.SHIFT_LEFT || click == ClickType.SHIFT_RIGHT) {
-//            ItemStack armor = event.getCurrentItem();
-//            if (shieldManager.isACustomShield(armor) && !itemSystem.isItemUsable(armor, player)) {
-//                event.setCancelled(true);
-//                player.sendMessage("§c⚠ §nYou are too inexperienced for this item!§r§c ⚠");
-//                itemSystem.updateUnusableItemName(armor, false);
+//            if (shieldManager.isACustomShield(event.getCurrentItem()) && rawSlot != 45) {
+//                player.sendMessage("sneed (shift clicked into offhand)");
+////                shieldManager.addShieldStatsToPlayerStats(player, maybeShield);
+////                ItemSystem.updateUnusableItemName(maybeShield, true);
 //            }
-//        }
-//    }
-//
-//    @EventHandler
-//    public void blockRightClickEquippingUnusableShieldFromHand(PlayerInteractEvent event) {
-//        if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
-//            Player player = event.getPlayer();
-//            ItemStack item = event.getItem();
-//
-//            if (shieldManager.isACustomShield(item) && !itemSystem.isItemUsable(item, player)) {
-//                itemSystem.updateUnusableItemName(item, false);
-//                event.setCancelled(true);
-//                player.sendMessage("§c⚠ §nYou are too inexperienced for this item!§r§c ⚠");
+//        } else if (click == ClickType.NUMBER_KEY) {
+//            if (shieldManager.isACustomShield(player.getInventory().getItem(event.getHotbarButton()))) {
+//                player.sendMessage("sneed (num key clicked into offhand)");
+//            }
+//        } else if (click == ClickType.SWAP_OFFHAND) {
+//            if (shieldManager.isACustomShield(event.getCurrentItem())) {
+//                player.sendMessage("sneed (swap offhand)");
 //            }
 //        }
 //    }

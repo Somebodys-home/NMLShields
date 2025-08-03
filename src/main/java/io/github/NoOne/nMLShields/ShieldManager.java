@@ -1,9 +1,7 @@
 package io.github.NoOne.nMLShields;
 
-import io.github.NoOne.nMLDefenses.DefenseLore;
-import io.github.NoOne.nMLDefenses.DefenseManager;
-import io.github.NoOne.nMLDefenses.DefenseType;
 import io.github.NoOne.nMLItems.ItemRarity;
+import io.github.NoOne.nMLItems.ItemStat;
 import io.github.NoOne.nMLItems.ItemSystem;
 import io.github.NoOne.nMLItems.ItemType;
 import io.github.NoOne.nMLPlayerStats.statSystem.StatChangeEvent;
@@ -16,21 +14,15 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
-
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
-
-import static io.github.NoOne.nMLDefenses.DefenseType.*;
+import static io.github.NoOne.nMLItems.ItemStat.*;
 
 public class ShieldManager {
     private NMLShields nmlShields;
-    private ItemSystem itemSystem;
-    private DefenseManager defenseManager;
 
     public ShieldManager(NMLShields nmlShields) {
         this.nmlShields = nmlShields;
-        itemSystem = nmlShields.getItemSystem();
-        defenseManager = nmlShields.getDefenseManager();
     }
 
     public ItemStack generateShield(Player receiver, ItemRarity rarity, int level) {
@@ -39,14 +31,14 @@ public class ShieldManager {
         PersistentDataContainer pdc = meta.getPersistentDataContainer();
         List<String> lore = new ArrayList<>();
 
-        pdc.set(itemSystem.makeItemTypeKey(ItemType.SHIELD), PersistentDataType.INTEGER, 1);
-        pdc.set(itemSystem.makeItemRarityKey(rarity), PersistentDataType.INTEGER, 1);
-        pdc.set(itemSystem.getLevelKey(), PersistentDataType.INTEGER, level);
+        pdc.set(ItemSystem.makeItemTypeKey(ItemType.SHIELD), PersistentDataType.INTEGER, 1);
+        pdc.set(ItemSystem.makeItemRarityKey(rarity), PersistentDataType.INTEGER, 1);
+        pdc.set(ItemSystem.getLevelKey(), PersistentDataType.INTEGER, level);
         shield.setItemMeta(meta);
 
         String name = generateShieldName(rarity, level);
         meta.setDisplayName(name);
-        pdc.set(itemSystem.getOriginalNameKey(), PersistentDataType.STRING, name);
+        pdc.set(ItemSystem.getOriginalNameKey(), PersistentDataType.STRING, name);
 
         lore.add(ItemRarity.getItemRarityColor(rarity) + "" + ChatColor.BOLD + ItemRarity.getItemRarityString(rarity).toUpperCase() + " " + ItemType.getItemTypeString(ItemType.SHIELD).toUpperCase());
         lore.add("");
@@ -54,7 +46,7 @@ public class ShieldManager {
         shield.setItemMeta(meta);
 
         generateShieldStats(shield, rarity, level);
-        itemSystem.updateUnusableItemName(shield, itemSystem.isItemUsable(shield, receiver));
+        ItemSystem.updateUnusableItemName(shield, ItemSystem.isItemUsable(shield, receiver));
 
         return shield;
     }
@@ -117,45 +109,44 @@ public class ShieldManager {
     }
 
     public void generateShieldStats(ItemStack shield, ItemRarity rarity, int level) {
-        List<DefenseType> possibleSecondDefenseTypes = new ArrayList<>(List.of(BLOCK, DEFENSE, OVERHEALTH, PHYSICALRESIST, FIRERESIST, COLDRESIST, EARTHRESIST, LIGHTNINGRESIST, AIRRESIST, LIGHTRESIST, DARKRESIST));
-
-        int firstDefense = (level * 5) + 10;
-        DefenseType secondType = possibleSecondDefenseTypes.get(ThreadLocalRandom.current().nextInt(possibleSecondDefenseTypes.size()));
+        List<ItemStat> possibleSecondDefenseTypes = new ArrayList<>(List.of(BLOCK, DEFENSE, OVERHEALTH, PHYSICALRESIST, FIRERESIST, COLDRESIST, EARTHRESIST, LIGHTNINGRESIST, AIRRESIST, LIGHTRESIST, DARKRESIST));
+        int firstDefenseValue = (level * 5) + 10;
+        ItemStat secondType = possibleSecondDefenseTypes.get(ThreadLocalRandom.current().nextInt(possibleSecondDefenseTypes.size()));
         int secondDefense = level;
 
         switch (rarity) {
             case COMMON -> {
-                defenseManager.setDefense(shield, BLOCK, firstDefense);
+                ItemSystem.setStat(shield, BLOCK, firstDefenseValue);
             }
             case UNCOMMON, RARE -> {
                 if (secondType == BLOCK) {
-                    defenseManager.setDefense(shield, BLOCK, firstDefense + secondDefense);
+                    ItemSystem.setStat(shield, BLOCK, firstDefenseValue + secondDefense);
                 } else {
-                    defenseManager.setDefense(shield, BLOCK, firstDefense);
-                    defenseManager.setDefense(shield, secondType, secondDefense);
+                    ItemSystem.setStat(shield, BLOCK, firstDefenseValue);
+                    ItemSystem.setStat(shield, secondType, secondDefense);
                 }
             }
             case MYTHICAL -> {
-                firstDefense = (level * 8) + 10;
+                firstDefenseValue = (level * 8) + 10;
 
                 if (secondType == BLOCK) {
-                    defenseManager.setDefense(shield, BLOCK, firstDefense + secondDefense);
+                    ItemSystem.setStat(shield, BLOCK, firstDefenseValue + secondDefense);
                 } else {
-                    defenseManager.setDefense(shield, BLOCK, firstDefense);
-                    defenseManager.setDefense(shield, secondType, secondDefense);
+                    ItemSystem.setStat(shield, BLOCK, firstDefenseValue);
+                    ItemSystem.setStat(shield, secondType, secondDefense);
                 }
             }
         }
 
-        DefenseLore.updateLoreWithElementalDefense(shield, shield.getItemMeta());
+        ItemSystem.updateLoreWithItemStats(shield);
     }
 
     public void addShieldStatsToPlayerStats(Player player, ItemStack shield) {
         if (isACustomShield(shield)) {
-            HashMap<DefenseType, Double> defenseMap = defenseManager.getAllDefenseStats(shield);
+            HashMap<ItemStat, Double> defenseMap = ItemSystem.getAllStats(shield);
             Stats stats = nmlShields.getProfileManager().getPlayerProfile(player.getUniqueId()).getStats();
 
-            for (Map.Entry<DefenseType, Double> stat : defenseMap.entrySet()) {
+            for (Map.Entry<ItemStat, Double> stat : defenseMap.entrySet()) {
                 switch (stat.getKey()) {
                     case BLOCK -> stats.add2Stat("block", stat.getValue().intValue());
                     case DEFENSE -> stats.add2Stat("defense", stat.getValue().intValue());
@@ -170,17 +161,17 @@ public class ShieldManager {
                     case DARKRESIST -> stats.add2Stat("darkresist", stat.getValue().intValue());
                 }
 
-                Bukkit.getPluginManager().callEvent(new StatChangeEvent(player, DefenseType.getDefenseString(stat.getKey()).toLowerCase()));
+                Bukkit.getPluginManager().callEvent(new StatChangeEvent(player, ItemStat.getStatString(stat.getKey()).toLowerCase()));
             }
         }
     }
 
     public void removeShieldStatsFromPlayerStats(Player player, ItemStack shield) {
         if (isACustomShield(shield)) {
-            HashMap<DefenseType, Double> defenseMap = defenseManager.getAllDefenseStats(shield);
+            HashMap<ItemStat, Double> defenseMap = ItemSystem.getAllStats(shield);
             Stats stats = nmlShields.getProfileManager().getPlayerProfile(player.getUniqueId()).getStats();
 
-            for (Map.Entry<DefenseType, Double> stat : defenseMap.entrySet()) {
+            for (Map.Entry<ItemStat, Double> stat : defenseMap.entrySet()) {
                 switch (stat.getKey()) {
                     case BLOCK -> stats.removeFromStat("block", stat.getValue().intValue());
                     case DEFENSE -> stats.removeFromStat("defense", stat.getValue().intValue());
@@ -195,7 +186,7 @@ public class ShieldManager {
                     case DARKRESIST -> stats.removeFromStat("darkresist", stat.getValue().intValue());
                 }
 
-                Bukkit.getPluginManager().callEvent(new StatChangeEvent(player, DefenseType.getDefenseString(stat.getKey()).toLowerCase()));
+                Bukkit.getPluginManager().callEvent(new StatChangeEvent(player, ItemStat.getStatString(stat.getKey()).toLowerCase()));
             }
         }
     }
@@ -204,6 +195,6 @@ public class ShieldManager {
         if (maybeShield == null || maybeShield.getType() == Material.AIR) return false;
         if (!maybeShield.hasItemMeta())  return false;
 
-        return itemSystem.getItemTypeFromItemStack(maybeShield) == ItemType.SHIELD;
+        return ItemSystem.getItemTypeFromItemStack(maybeShield) == ItemType.SHIELD;
     }
 }

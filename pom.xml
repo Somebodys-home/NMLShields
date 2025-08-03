@@ -114,13 +114,7 @@
         <dependency>
             <groupId>com.github.Somebodys-home</groupId>
             <artifactId>NMLItems</artifactId>
-            <version>889a8c41ce</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.github.Somebodys-home</groupId>
-            <artifactId>NMLDefenses</artifactId>
-            <version>86e6579d30</version>
+            <version>f4c744a93c</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>
