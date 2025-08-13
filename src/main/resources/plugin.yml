@@ -2,6 +2,10 @@ name: NMLShields
 version: '1.0'
 main: io.github.NoOne.nMLShields.NMLShields
 api-version: '1.21'
+depend:
+  - NMLItems
+  - NMLPlayerStats
+  - NMLArmor
 commands:
   generateShield:
     description: Generates a shield for the user

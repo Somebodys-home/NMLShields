@@ -26,7 +26,7 @@ public class ShieldManager {
     }
 
     public ItemStack generateShield(Player receiver, ItemRarity rarity, int level) {
-        ItemStack shield = new ItemStack(ItemType.getItemTypeMaterial(ItemType.SHIELD));
+        ItemStack shield = new ItemStack(Material.SHIELD);
         ItemMeta meta = shield.getItemMeta();
         PersistentDataContainer pdc = meta.getPersistentDataContainer();
         List<String> lore = new ArrayList<>();
@@ -142,7 +142,7 @@ public class ShieldManager {
     }
 
     public void addShieldStatsToPlayerStats(Player player, ItemStack shield) {
-        if (isACustomShield(shield)) {
+        if (ItemSystem.getItemTypeFromItemStack(shield) == ItemType.SHIELD) {
             HashMap<ItemStat, Double> defenseMap = ItemSystem.getAllStats(shield);
             Stats stats = nmlShields.getProfileManager().getPlayerProfile(player.getUniqueId()).getStats();
 
@@ -167,7 +167,7 @@ public class ShieldManager {
     }
 
     public void removeShieldStatsFromPlayerStats(Player player, ItemStack shield) {
-        if (isACustomShield(shield)) {
+        if (ItemSystem.getItemTypeFromItemStack(shield) == ItemType.SHIELD) {
             HashMap<ItemStat, Double> defenseMap = ItemSystem.getAllStats(shield);
             Stats stats = nmlShields.getProfileManager().getPlayerProfile(player.getUniqueId()).getStats();
 
@@ -189,12 +189,5 @@ public class ShieldManager {
                 Bukkit.getPluginManager().callEvent(new StatChangeEvent(player, ItemStat.getStatString(stat.getKey()).toLowerCase()));
             }
         }
-    }
-
-    public boolean isACustomShield(ItemStack maybeShield) {
-        if (maybeShield == null || maybeShield.getType() == Material.AIR) return false;
-        if (!maybeShield.hasItemMeta())  return false;
-
-        return ItemSystem.getItemTypeFromItemStack(maybeShield) == ItemType.SHIELD;
     }
 }
