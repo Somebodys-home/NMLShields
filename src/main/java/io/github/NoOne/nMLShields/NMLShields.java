@@ -14,11 +14,14 @@ public final class NMLShields extends JavaPlugin {
     private ProfileManager profileManager;
     private NMLItems nmlItems;
     private ShieldManager shieldManager;
+    private BlockBar blockBar;
 
     @Override
     public void onEnable() {
         instance = this;
         nmlItems = JavaPlugin.getPlugin(NMLItems.class);
+        blockBar = new BlockBar(this);
+        blockBar.start();
 
         Plugin plugin = Bukkit.getPluginManager().getPlugin("NMLPlayerStats");
         if (plugin instanceof NMLPlayerStats statsPlugin) {
@@ -30,6 +33,11 @@ public final class NMLShields extends JavaPlugin {
 
         getServer().getPluginManager().registerEvents(new ShieldListener(this), this);
         getCommand("generateShield").setExecutor(new GenerateShieldCommand(this));
+    }
+
+    @Override
+    public void onDisable() {
+        blockBar.stop();
     }
 
     public NMLShields getInstance() {
@@ -50,5 +58,9 @@ public final class NMLShields extends JavaPlugin {
 
     public ShieldManager getShieldManager() {
         return shieldManager;
+    }
+
+    public BlockBar getBlockBar() {
+        return blockBar;
     }
 }
