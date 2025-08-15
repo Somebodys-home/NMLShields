@@ -11,11 +11,11 @@ import org.bukkit.inventory.ItemStack;
 
 public class ShieldListener implements Listener {
     private NMLShields nmlShields;
-    private BlockBar blockBar;
+    private GuardBar guardBar;
 
     public ShieldListener(NMLShields nmlShields) {
         this.nmlShields = nmlShields;
-        blockBar = nmlShields.getBlockBar();
+        guardBar = nmlShields.getBlockBar();
     }
 
     @EventHandler()
@@ -79,7 +79,7 @@ public class ShieldListener implements Listener {
     public void blockIncomingDamage(EntityDamageByEntityEvent event) {
         if (!(event.getEntity() instanceof Player player)) return;
         if (player.isBlocking()) {
-            blockBar.damageBar(player, event.getDamage());
+            guardBar.damageBar(player, event.getDamage());
         }
     }
 }

@@ -1,6 +1,5 @@
 package io.github.NoOne.nMLShields;
 
-import io.github.NoOne.nMLItems.ItemSystem;
 import io.github.NoOne.nMLItems.NMLItems;
 import io.github.NoOne.nMLPlayerStats.NMLPlayerStats;
 import io.github.NoOne.nMLPlayerStats.profileSystem.ProfileManager;
@@ -14,14 +13,14 @@ public final class NMLShields extends JavaPlugin {
     private ProfileManager profileManager;
     private NMLItems nmlItems;
     private ShieldManager shieldManager;
-    private BlockBar blockBar;
+    private GuardBar guardBar;
 
     @Override
     public void onEnable() {
         instance = this;
         nmlItems = JavaPlugin.getPlugin(NMLItems.class);
-        blockBar = new BlockBar(this);
-        blockBar.start();
+        guardBar = new GuardBar(this);
+        guardBar.start();
 
         Plugin plugin = Bukkit.getPluginManager().getPlugin("NMLPlayerStats");
         if (plugin instanceof NMLPlayerStats statsPlugin) {
@@ -37,7 +36,7 @@ public final class NMLShields extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        blockBar.stop();
+        guardBar.stop();
     }
 
     public NMLShields getInstance() {
@@ -60,7 +59,7 @@ public final class NMLShields extends JavaPlugin {
         return shieldManager;
     }
 
-    public BlockBar getBlockBar() {
-        return blockBar;
+    public GuardBar getBlockBar() {
+        return guardBar;
     }
 }

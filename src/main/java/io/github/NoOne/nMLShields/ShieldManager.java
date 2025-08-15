@@ -109,30 +109,30 @@ public class ShieldManager {
     }
 
     public void generateShieldStats(ItemStack shield, ItemRarity rarity, int level) {
-        List<ItemStat> possibleSecondDefenseTypes = new ArrayList<>(List.of(BLOCK, DEFENSE, OVERHEALTH, PHYSICALRESIST, FIRERESIST, COLDRESIST, EARTHRESIST, LIGHTNINGRESIST, AIRRESIST, LIGHTRESIST, DARKRESIST));
+        List<ItemStat> possibleSecondDefenseTypes = new ArrayList<>(List.of(GUARD, DEFENSE, OVERHEALTH, PHYSICALRESIST, FIRERESIST, COLDRESIST, EARTHRESIST, LIGHTNINGRESIST, AIRRESIST, LIGHTRESIST, DARKRESIST));
         int firstDefenseValue = (level * 5) + 10;
         ItemStat secondType = possibleSecondDefenseTypes.get(ThreadLocalRandom.current().nextInt(possibleSecondDefenseTypes.size()));
         int secondDefense = level;
 
         switch (rarity) {
             case COMMON -> {
-                ItemSystem.setStat(shield, BLOCK, firstDefenseValue);
+                ItemSystem.setStat(shield, GUARD, firstDefenseValue);
             }
             case UNCOMMON, RARE -> {
-                if (secondType == BLOCK) {
-                    ItemSystem.setStat(shield, BLOCK, firstDefenseValue + secondDefense);
+                if (secondType == GUARD) {
+                    ItemSystem.setStat(shield, GUARD, firstDefenseValue + secondDefense);
                 } else {
-                    ItemSystem.setStat(shield, BLOCK, firstDefenseValue);
+                    ItemSystem.setStat(shield, GUARD, firstDefenseValue);
                     ItemSystem.setStat(shield, secondType, secondDefense);
                 }
             }
             case MYTHICAL -> {
                 firstDefenseValue = (level * 8) + 10;
 
-                if (secondType == BLOCK) {
-                    ItemSystem.setStat(shield, BLOCK, firstDefenseValue + secondDefense);
+                if (secondType == GUARD) {
+                    ItemSystem.setStat(shield, GUARD, firstDefenseValue + secondDefense);
                 } else {
-                    ItemSystem.setStat(shield, BLOCK, firstDefenseValue);
+                    ItemSystem.setStat(shield, GUARD, firstDefenseValue);
                     ItemSystem.setStat(shield, secondType, secondDefense);
                 }
             }
@@ -148,7 +148,7 @@ public class ShieldManager {
 
             for (Map.Entry<ItemStat, Double> stat : defenseMap.entrySet()) {
                 switch (stat.getKey()) {
-                    case BLOCK -> stats.add2Stat("block", stat.getValue().intValue());
+                    case GUARD -> stats.add2Stat("GUARD", stat.getValue().intValue());
                     case DEFENSE -> stats.add2Stat("defense", stat.getValue().intValue());
                     case OVERHEALTH -> stats.add2Stat("maxoverhealth", stat.getValue());
                     case PHYSICALRESIST -> stats.add2Stat("physicalresist", stat.getValue().intValue());
@@ -173,7 +173,7 @@ public class ShieldManager {
 
             for (Map.Entry<ItemStat, Double> stat : defenseMap.entrySet()) {
                 switch (stat.getKey()) {
-                    case BLOCK -> stats.removeFromStat("block", stat.getValue().intValue());
+                    case GUARD -> stats.removeFromStat("GUARD", stat.getValue().intValue());
                     case DEFENSE -> stats.removeFromStat("defense", stat.getValue().intValue());
                     case OVERHEALTH -> stats.removeFromStat("maxoverhealth", stat.getValue());
                     case PHYSICALRESIST -> stats.removeFromStat("physicalresist", stat.getValue().intValue());
