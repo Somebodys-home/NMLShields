@@ -10,6 +10,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
@@ -34,6 +35,8 @@ public class ShieldManager {
         pdc.set(ItemSystem.makeItemTypeKey(ItemType.SHIELD), PersistentDataType.INTEGER, 1);
         pdc.set(ItemSystem.makeItemRarityKey(rarity), PersistentDataType.INTEGER, 1);
         pdc.set(ItemSystem.getLevelKey(), PersistentDataType.INTEGER, level);
+        meta.setUnbreakable(true);
+        meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_UNBREAKABLE);
         shield.setItemMeta(meta);
 
         String name = generateShieldName(rarity, level);
@@ -148,7 +151,7 @@ public class ShieldManager {
 
             for (Map.Entry<ItemStat, Double> stat : defenseMap.entrySet()) {
                 switch (stat.getKey()) {
-                    case GUARD -> stats.add2Stat("GUARD", stat.getValue().intValue());
+                    case GUARD -> stats.add2Stat("guard", stat.getValue().intValue());
                     case DEFENSE -> stats.add2Stat("defense", stat.getValue().intValue());
                     case OVERHEALTH -> stats.add2Stat("maxoverhealth", stat.getValue());
                     case PHYSICALRESIST -> stats.add2Stat("physicalresist", stat.getValue().intValue());
@@ -173,7 +176,7 @@ public class ShieldManager {
 
             for (Map.Entry<ItemStat, Double> stat : defenseMap.entrySet()) {
                 switch (stat.getKey()) {
-                    case GUARD -> stats.removeFromStat("GUARD", stat.getValue().intValue());
+                    case GUARD -> stats.removeFromStat("guard", stat.getValue().intValue());
                     case DEFENSE -> stats.removeFromStat("defense", stat.getValue().intValue());
                     case OVERHEALTH -> stats.removeFromStat("maxoverhealth", stat.getValue());
                     case PHYSICALRESIST -> stats.removeFromStat("physicalresist", stat.getValue().intValue());

@@ -1,5 +1,7 @@
 package io.github.NoOne.nMLShields;
 
+import io.github.NoOne.nMLItems.ItemSystem;
+import io.github.NoOne.nMLItems.ItemType;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -14,7 +16,7 @@ import org.bukkit.util.Vector;
 import java.util.HashMap;
 import java.util.UUID;
 
-public class GuardBar {
+public class GuardingSystem {
     private NMLShields nmlShields;
     private BukkitTask playerGuardingTask;
     private final HashMap<UUID, BossBar> guardBars = new HashMap<>();
@@ -22,7 +24,7 @@ public class GuardBar {
     private final HashMap<UUID, Integer> damageCooldowns = new HashMap<>();
     private static int regenCooldown = 40;
 
-    public GuardBar(NMLShields nmlShields) {
+    public GuardingSystem(NMLShields nmlShields) {
         this.nmlShields = nmlShields;
     }
 
@@ -42,12 +44,11 @@ public class GuardBar {
 
                 // get the cooldown of each player, or 0 if it doesnt exist
                 int cooldown = damageCooldowns.getOrDefault(playerId, 0);
-                //player.sendMessage(String.valueOf(cooldown));
 
                 BukkitTask regenTask = ongoingRegenTasks.get(playerId); // gets the block regen task of that player
                 // make the player's block bar visible if they're blocking,
                 // not regenerating block, or when the bar is red from being damaged
-                if (player.isBlocking() || (regenTask != null && !regenTask.isCancelled()) || cooldown > 0) {
+                if ((player.isBlocking() && ItemSystem.getItemTypeFromItemStack(player.getInventory().getItemInMainHand()) != ItemType.SHIELD) || (regenTask != null && !regenTask.isCancelled()) || cooldown > 0) {
                     bar.addPlayer(player);
                 } else {
                     bar.removePlayer(player);

@@ -11,11 +11,11 @@ import org.bukkit.inventory.ItemStack;
 
 public class ShieldListener implements Listener {
     private NMLShields nmlShields;
-    private GuardBar guardBar;
+    private GuardingSystem guardingSystem;
 
     public ShieldListener(NMLShields nmlShields) {
         this.nmlShields = nmlShields;
-        guardBar = nmlShields.getBlockBar();
+        guardingSystem = nmlShields.getBlockBar();
     }
 
     @EventHandler()
@@ -34,52 +34,11 @@ public class ShieldListener implements Listener {
         ItemSystem.updateUnusableItemName(heldItem, usable);
     }
 
-    // todo: make this work eventually
-//    @EventHandler
-//    public void updatePlayerStatsWhenHoldingShield(PlayerItemHeldEvent event) {
-//        Player player = event.getPlayer();
-//        ItemStack newHand = player.getInventory().getItem(event.getNewSlot());
-//        ItemStack oldHand = player.getInventory().getItem(event.getPreviousSlot());
-//
-//        Bukkit.getPluginManager().callEvent(new ArmorChangeEvent(player, oldHand, newHand));
-//    }
-//
-//    @EventHandler
-//    public void updatePlayerStatsWhenInterractingWithMainhandShield(InventoryClickEvent event) {
-//        Player player = (Player) event.getWhoClicked();
-//        PlayerInventory playerInventory = player.getInventory();
-//        ItemStack cursorItem = event.getCursor();
-//        ItemStack clickedItem = playerInventory.getItem(event.getSlot());
-//
-//        if (clickedItem != null) {
-//            clickedItem = clickedItem.clone(); // lock in the pre-click item
-//        }
-//
-//        // putting shield in main hand
-//        if (ItemSystem.getItemTypeFromItemStack(cursorItem) == ItemType.SHIELD && event.getSlot() == playerInventory.getHeldItemSlot()) {
-//            Bukkit.getPluginManager().callEvent(new ArmorChangeEvent(player, playerInventory.getItem(event.getSlot()), cursorItem));
-//            return;
-//        }
-//
-//        ItemStack finalClickedItem = clickedItem;
-//        Bukkit.getScheduler().runTaskLater(nmlShields , () -> {
-//            ItemStack newItem = playerInventory.getItem(event.getSlot()); // REFRESH
-//            if (newItem == null) {
-//                newItem = new ItemStack(Material.AIR);
-//            }
-//
-//            // for taking shields out of your main hand
-//            if (ItemSystem.getItemTypeFromItemStack(finalClickedItem) == ItemType.SHIELD && event.getSlot() == playerInventory.getHeldItemSlot()) {
-//                Bukkit.getPluginManager().callEvent(new ArmorChangeEvent(player, finalClickedItem, newItem));
-//            }
-//        }, 1L);
-//    }
-
     @EventHandler
     public void blockIncomingDamage(EntityDamageByEntityEvent event) {
         if (!(event.getEntity() instanceof Player player)) return;
         if (player.isBlocking()) {
-            guardBar.damageBar(player, event.getDamage());
+            guardingSystem.damageBar(player, event.getDamage());
         }
     }
 }
