@@ -26,7 +26,7 @@ public class ShieldListener implements Listener {
 
         if (heldItem == null || heldItem.getType() == Material.AIR) { return; }
         if (!heldItem.hasItemMeta()) { return; }
-        if (ItemSystem.getItemTypeFromItemStack(heldItem) == null) { return; }
+        if (ItemSystem.getItemType(heldItem) == null) { return; }
         if (!usable) {
             player.sendMessage("§c⚠ §nYou are too inexperienced for this item!§r§c ⚠");
         }
@@ -41,4 +41,12 @@ public class ShieldListener implements Listener {
             guardingSystem.damageBar(player, event.getDamage());
         }
     }
+
+//    @EventHandler // todo: eventually get to blocking damage
+//    public void blockIncomingDamage(CustomDa event) {
+//        if (!(event.getEntity() instanceof Player player)) return;
+//        if (player.isBlocking()) {
+//            guardingSystem.damageBar(player, event.getDamage());
+//        }
+//    }
 }

@@ -48,7 +48,7 @@ public class GuardingSystem {
                 BukkitTask regenTask = ongoingRegenTasks.get(playerId); // gets the block regen task of that player
                 // make the player's block bar visible if they're blocking,
                 // not regenerating block, or when the bar is red from being damaged
-                if ((player.isBlocking() && ItemSystem.getItemTypeFromItemStack(player.getInventory().getItemInMainHand()) != ItemType.SHIELD) || (regenTask != null && !regenTask.isCancelled()) || cooldown > 0) {
+                if ((player.isBlocking() && ItemSystem.getItemType(player.getInventory().getItemInMainHand()) != ItemType.SHIELD) || (regenTask != null && !regenTask.isCancelled()) || cooldown > 0) {
                     bar.addPlayer(player);
                 } else {
                     bar.removePlayer(player);

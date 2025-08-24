@@ -141,11 +141,11 @@ public class ShieldManager {
             }
         }
 
-        ItemSystem.updateLoreWithItemStats(shield);
+        ItemSystem.updateLoreWithStats(shield);
     }
 
     public void addShieldStatsToPlayerStats(Player player, ItemStack shield) {
-        if (ItemSystem.getItemTypeFromItemStack(shield) == ItemType.SHIELD) {
+        if (ItemSystem.getItemType(shield) == ItemType.SHIELD) {
             HashMap<ItemStat, Double> defenseMap = ItemSystem.getAllStats(shield);
             Stats stats = nmlShields.getProfileManager().getPlayerProfile(player.getUniqueId()).getStats();
 
@@ -170,7 +170,7 @@ public class ShieldManager {
     }
 
     public void removeShieldStatsFromPlayerStats(Player player, ItemStack shield) {
-        if (ItemSystem.getItemTypeFromItemStack(shield) == ItemType.SHIELD) {
+        if (ItemSystem.getItemType(shield) == ItemType.SHIELD) {
             HashMap<ItemStat, Double> defenseMap = ItemSystem.getAllStats(shield);
             Stats stats = nmlShields.getProfileManager().getPlayerProfile(player.getUniqueId()).getStats();
 
