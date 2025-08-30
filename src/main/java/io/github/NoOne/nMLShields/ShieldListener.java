@@ -51,15 +51,14 @@ public class ShieldListener implements Listener {
     @EventHandler(priority = EventPriority.HIGH)
     public void blockIncomingDamage(CustomDamageEvent event) {
         if (!(event.getDamager() instanceof Player player)) return;
-        event.setCancelled(true);
-
-        double totalDamage = 0;
-        HashMap<DamageType, Double> damageSplits = event.getDamageSplits();
-        for (Map.Entry<DamageType, Double> entry : damageSplits.entrySet()) {
-            totalDamage += entry.getValue();
-        }
-
         if (player.isBlocking()) {
+            event.setCancelled(true);
+
+            double totalDamage = 0;
+            HashMap<DamageType, Double> damageSplits = event.getDamageSplits();
+            for (Map.Entry<DamageType, Double> entry : damageSplits.entrySet()) {
+                totalDamage += entry.getValue();
+            }
             guardingSystem.damageBar(player, totalDamage);
         }
     }
