@@ -1,13 +1,19 @@
 package io.github.NoOne.nMLShields;
 
+import io.github.Gabriel.damagePlugin.customDamage.CustomDamageEvent;
+import io.github.Gabriel.damagePlugin.customDamage.DamageType;
 import io.github.NoOne.nMLItems.ItemSystem;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.inventory.ItemStack;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class ShieldListener implements Listener {
     private NMLShields nmlShields;
@@ -42,11 +48,19 @@ public class ShieldListener implements Listener {
         }
     }
 
-//    @EventHandler // todo: eventually get to blocking damage
-//    public void blockIncomingDamage(CustomDa event) {
-//        if (!(event.getEntity() instanceof Player player)) return;
-//        if (player.isBlocking()) {
-//            guardingSystem.damageBar(player, event.getDamage());
-//        }
-//    }
+    @EventHandler(priority = EventPriority.HIGH)
+    public void blockIncomingDamage(CustomDamageEvent event) {
+        if (!(event.getDamager() instanceof Player player)) return;
+        event.setCancelled(true);
+
+        double totalDamage = 0;
+        HashMap<DamageType, Double> damageSplits = event.getDamageSplits();
+        for (Map.Entry<DamageType, Double> entry : damageSplits.entrySet()) {
+            totalDamage += entry.getValue();
+        }
+
+        if (player.isBlocking()) {
+            guardingSystem.damageBar(player, totalDamage);
+        }
+    }
 }

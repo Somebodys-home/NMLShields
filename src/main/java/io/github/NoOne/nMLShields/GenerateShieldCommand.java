@@ -1,7 +1,6 @@
 package io.github.NoOne.nMLShields;
 
 import io.github.NoOne.nMLItems.ItemRarity;
-import io.github.NoOne.nMLItems.ItemType;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -15,10 +14,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class GenerateShieldCommand implements CommandExecutor, TabCompleter {
-    private ShieldManager shieldManager;
+    private ShieldGenerator shieldGenerator;
 
     public GenerateShieldCommand(NMLShields nmlShields) {
-        shieldManager = nmlShields.getShieldManager();
+        shieldGenerator = nmlShields.getShieldManager();
     }
 
     @Override
@@ -27,7 +26,7 @@ public class GenerateShieldCommand implements CommandExecutor, TabCompleter {
             int level = Integer.parseInt(args[0]);
             String rarity = args[1];
 
-            ItemStack armor = shieldManager.generateShield(player, ItemRarity.getItemRarityFromString(rarity), level);
+            ItemStack armor = shieldGenerator.generateShield(player, ItemRarity.getItemRarityFromString(rarity), level);
 
             player.getInventory().setItemInMainHand(armor);
         }

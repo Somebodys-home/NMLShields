@@ -1,6 +1,5 @@
 package io.github.NoOne.nMLShields;
 
-import io.github.NoOne.nMLItems.NMLItems;
 import io.github.NoOne.nMLPlayerStats.NMLPlayerStats;
 import io.github.NoOne.nMLPlayerStats.profileSystem.ProfileManager;
 import org.bukkit.Bukkit;
@@ -11,14 +10,12 @@ public final class NMLShields extends JavaPlugin {
     private NMLShields instance;
     private static NMLPlayerStats nmlPlayerStats;
     private ProfileManager profileManager;
-    private NMLItems nmlItems;
-    private ShieldManager shieldManager;
+    private ShieldGenerator shieldGenerator;
     private GuardingSystem guardingSystem;
 
     @Override
     public void onEnable() {
         instance = this;
-        nmlItems = JavaPlugin.getPlugin(NMLItems.class);
         guardingSystem = new GuardingSystem(this);
         guardingSystem.start();
 
@@ -28,7 +25,7 @@ public final class NMLShields extends JavaPlugin {
             profileManager = nmlPlayerStats.getProfileManager();
         }
 
-        shieldManager = new ShieldManager(this);
+        shieldGenerator = new ShieldGenerator();
 
         getServer().getPluginManager().registerEvents(new ShieldListener(this), this);
         getCommand("generateShield").setExecutor(new GenerateShieldCommand(this));
@@ -43,10 +40,6 @@ public final class NMLShields extends JavaPlugin {
         return instance;
     }
 
-    public NMLItems getNmlItems() {
-        return nmlItems;
-    }
-
     public ProfileManager getProfileManager() {
         return profileManager;
     }
@@ -55,8 +48,8 @@ public final class NMLShields extends JavaPlugin {
         return nmlPlayerStats;
     }
 
-    public ShieldManager getShieldManager() {
-        return shieldManager;
+    public ShieldGenerator getShieldManager() {
+        return shieldGenerator;
     }
 
     public GuardingSystem getBlockBar() {
