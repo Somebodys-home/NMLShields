@@ -55,4 +55,8 @@ public final class NMLShields extends JavaPlugin {
     public GuardingSystem getBlockBar() {
         return guardingSystem;
     }
+
+    public GuardingSystem getGuardingSystem() {
+        return guardingSystem;
+    }
 }
