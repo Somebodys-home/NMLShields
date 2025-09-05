@@ -10,6 +10,9 @@ import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.metadata.FixedMetadataValue;
+import org.bukkit.metadata.MetadataValue;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
 
@@ -47,8 +50,10 @@ public class GuardingSystem {
 
                 BukkitTask regenTask = ongoingRegenTasks.get(playerId); // gets the block regen task of that player
                 // make the player's block bar visible if they're blocking,
-                // not regenerating block, or when the bar is red from being damaged
-                if ((player.isBlocking() && ItemSystem.getItemType(player.getInventory().getItemInMainHand()) != ItemType.SHIELD) || (regenTask != null && !regenTask.isCancelled()) || cooldown > 0) {
+                // not regenerating block, when the bar is red from being damaged, or after its fully regened after the method
+                if ((player.isBlocking() && ItemSystem.getItemType(player.getInventory().getItemInMainHand()) != ItemType.SHIELD) ||
+                    (regenTask != null && !regenTask.isCancelled()) || cooldown > 0 || player.hasMetadata("fully regenerate guard")) {
+
                     bar.addPlayer(player);
                 } else {
                     bar.removePlayer(player);
@@ -132,7 +137,7 @@ public class GuardingSystem {
             blockBar.setProgress(Math.min(1, blockBar.getProgress() + 0.003));
         }, 0L, 1L);
 
-        ongoingRegenTasks.put(uuid, task); // put the task on the
+        ongoingRegenTasks.put(uuid, task); // put the task on the hashmap
     }
 
     public void guardBreak(Player player, double carryoverDamage) {
@@ -159,5 +164,20 @@ public class GuardingSystem {
         }, 1L);
 
         player.setCooldown(Material.SHIELD, 40);
+    }
+
+    public void fullyRegenerateGuard(Player player) {
+        UUID uuid = player.getUniqueId();
+        BossBar blockBar = guardBars.get(uuid);
+
+        blockBar.setProgress(1);
+        player.setMetadata("fully regenerate guard", new FixedMetadataValue(nmlShields, true));
+
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                player.removeMetadata("fully regenerate guard", nmlShields);
+            }
+        }.runTaskLater(nmlShields, 40L);
     }
 }
