@@ -6,7 +6,3 @@ depend:
   - NMLItems
   - NMLPlayerStats
   - NMLArmor
-commands:
-  generateShield:
-    description: Generates a shield for the user
-    usage: /<command> <level> <rarity>

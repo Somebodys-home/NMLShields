@@ -11,16 +11,13 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.inventory.ItemStack;
-
 import java.util.HashMap;
 import java.util.Map;
 
 public class ShieldListener implements Listener {
-    private NMLShields nmlShields;
     private GuardingSystem guardingSystem;
 
     public ShieldListener(NMLShields nmlShields) {
-        this.nmlShields = nmlShields;
         guardingSystem = nmlShields.getBlockBar();
     }
 
@@ -49,7 +46,7 @@ public class ShieldListener implements Listener {
     }
 
     @EventHandler(priority = EventPriority.HIGH)
-    public void blockIncomingDamage(CustomDamageEvent event) {
+    public void blockIncomingCustomDamage(CustomDamageEvent event) {
         if (!(event.getDamager() instanceof Player player)) return;
         if (player.isBlocking()) {
             event.setCancelled(true);

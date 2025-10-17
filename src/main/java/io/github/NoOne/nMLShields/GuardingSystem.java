@@ -2,6 +2,7 @@ package io.github.NoOne.nMLShields;
 
 import io.github.NoOne.nMLItems.ItemSystem;
 import io.github.NoOne.nMLItems.ItemType;
+import io.github.NoOne.nMLPlayerStats.profileSystem.ProfileManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -21,6 +22,7 @@ import java.util.UUID;
 
 public class GuardingSystem {
     private NMLShields nmlShields;
+    private ProfileManager profileManager;
     private BukkitTask playerGuardingTask;
     private final HashMap<UUID, BossBar> guardBars = new HashMap<>();
     private final HashMap<UUID, BukkitTask> ongoingRegenTasks = new HashMap<>();
@@ -29,6 +31,7 @@ public class GuardingSystem {
 
     public GuardingSystem(NMLShields nmlShields) {
         this.nmlShields = nmlShields;
+        profileManager = nmlShields.getProfileManager();
     }
 
     public void start() {
@@ -91,7 +94,7 @@ public class GuardingSystem {
     public void damageBar(Player player, double damage) {
         UUID uuid = player.getUniqueId();
         BossBar guardBar = guardBars.get(uuid);
-        int guardStat = nmlShields.getNmlPlayerStats().getProfileManager().getPlayerProfile(uuid).getStats().getGuard();
+        int guardStat = profileManager.getPlayerProfile(uuid).getStats().getGuard();
         double damageFraction = damage / guardStat;
         double newProgress = guardBar.getProgress() - damageFraction;
         double guardbreakDamage = 0;
