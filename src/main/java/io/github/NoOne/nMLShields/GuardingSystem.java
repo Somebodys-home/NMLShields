@@ -52,10 +52,10 @@ public class GuardingSystem {
                 int cooldown = damageCooldowns.getOrDefault(playerId, 0);
 
                 BukkitTask regenTask = ongoingRegenTasks.get(playerId); // gets the block regen task of that player
-                // make the player's block bar visible if they're blocking,
-                // not regenerating block, when the bar is red from being damaged, or after its fully regened after the method
-                if ((player.isBlocking() && ItemSystem.getItemType(player.getInventory().getItemInMainHand()) != ItemType.SHIELD) ||
-                    (regenTask != null && !regenTask.isCancelled()) || cooldown > 0 || player.hasMetadata("fully regenerate guard")) {
+                // make the player's block bar visible if they're blocking with an offhand shield,
+                // not regenerating block, when the bar is red from being damaged,
+                // or after it's fully regenerated after the method
+                if (player.isBlocking() || (regenTask != null && !regenTask.isCancelled()) || cooldown > 0 || player.hasMetadata("fully regenerate guard")) {
 
                     bar.addPlayer(player);
                 } else {
@@ -144,25 +144,19 @@ public class GuardingSystem {
     }
 
     public void guardBreak(Player player, double carryoverDamage) {
+        Vector knockback = player.getLocation().getDirection().multiply(-7.5).setY(0);
+        ItemStack shield = player.getInventory().getItemInOffHand();
+
         player.sendTitle("§c⚠ GUARD BREAK! ⚠", "", 10, 30, 5);
         guardBars.get(player.getUniqueId()).setTitle("§cGuard Break!");
         player.playSound(player.getLocation(), Sound.ENTITY_ZOMBIE_BREAK_WOODEN_DOOR, 1f, 1f);
         player.playSound(player.getLocation(), Sound.BLOCK_ANVIL_LAND, .25f, .5f);
         player.damage(carryoverDamage);
-
-        Vector knockback = player.getLocation().getDirection().multiply(-2.6);
-        knockback.setY(0);
         player.setVelocity(knockback);
-
-        Bukkit.getScheduler().runTask(nmlShields, () -> {
-            Vector vel = player.getVelocity();
-            vel.setY(0);
-            player.setVelocity(vel);
-        });
-
-        ItemStack shield = player.getInventory().getItemInOffHand();
         player.getInventory().setItemInOffHand(new ItemStack(Material.AIR));
+
         Bukkit.getScheduler().runTaskLater(nmlShields, () -> {
+            player.setVelocity(player.getVelocity().setY(0)); // no vertical knockback from damage
             player.getInventory().setItemInOffHand(shield);
         }, 1L);
 

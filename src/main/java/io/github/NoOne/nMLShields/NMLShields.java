@@ -2,8 +2,6 @@ package io.github.NoOne.nMLShields;
 
 import io.github.NoOne.nMLPlayerStats.NMLPlayerStats;
 import io.github.NoOne.nMLPlayerStats.profileSystem.ProfileManager;
-import org.bukkit.Bukkit;
-import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public final class NMLShields extends JavaPlugin {
@@ -27,10 +25,6 @@ public final class NMLShields extends JavaPlugin {
 
     public ProfileManager getProfileManager() {
         return profileManager;
-    }
-
-    public GuardingSystem getBlockBar() {
-        return guardingSystem;
     }
 
     public GuardingSystem getGuardingSystem() {
