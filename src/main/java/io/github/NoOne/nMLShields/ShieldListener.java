@@ -41,18 +41,9 @@ public class ShieldListener implements Listener {
         ItemSystem.updateUnusableItemName(heldItem, usable);
     }
 
-    @EventHandler
-    public void blockIncomingDamage(EntityDamageByEntityEvent event) {
-        if (!(event.getEntity() instanceof Player player)) return;
-        if (player.isBlocking()) {
-            guardingSystem.damageBar(player, event.getDamage());
-        }
-    }
-
     @EventHandler(priority = EventPriority.HIGH)
     public void blockIncomingCustomDamage(CustomDamageEvent event) {
-        if (!(event.getDamager() instanceof Player player)) return;
-        if (player.isBlocking()) {
+        if (event.getTarget() instanceof Player player && player.isBlocking()) {
             event.setCancelled(true);
 
             double totalDamage = 0;
@@ -62,6 +53,8 @@ public class ShieldListener implements Listener {
                 totalDamage += entry.getValue();
             }
 
+            player.setNoDamageTicks(player.getMaximumNoDamageTicks());
+            player.playSound(player.getLocation(), Sound.ITEM_SHIELD_BLOCK, 1f, 1f);
             guardingSystem.damageBar(player, totalDamage);
         }
     }

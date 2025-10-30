@@ -144,13 +144,15 @@ public class GuardingSystem {
     }
 
     public void guardBreak(Player player, double carryoverDamage) {
-        Vector knockback = player.getLocation().getDirection().multiply(-7.5).setY(0);
+        player.sendMessage(carryoverDamage+"");
+        Vector knockback = player.getLocation().getDirection().multiply(-2).setY(0);
         ItemStack shield = player.getInventory().getItemInOffHand();
 
         player.sendTitle("§c⚠ GUARD BREAK! ⚠", "", 10, 30, 5);
         guardBars.get(player.getUniqueId()).setTitle("§cGuard Break!");
         player.playSound(player.getLocation(), Sound.ENTITY_ZOMBIE_BREAK_WOODEN_DOOR, 1f, 1f);
         player.playSound(player.getLocation(), Sound.BLOCK_ANVIL_LAND, .25f, .5f);
+        player.setNoDamageTicks(0);
         player.damage(carryoverDamage);
         player.setVelocity(knockback);
         player.getInventory().setItemInOffHand(new ItemStack(Material.AIR));
@@ -158,7 +160,7 @@ public class GuardingSystem {
         Bukkit.getScheduler().runTaskLater(nmlShields, () -> {
             player.setVelocity(player.getVelocity().setY(0)); // no vertical knockback from damage
             player.getInventory().setItemInOffHand(shield);
-        }, 1L);
+        }, 2L);
 
         player.setCooldown(Material.SHIELD, 40);
     }
