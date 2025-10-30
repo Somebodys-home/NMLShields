@@ -119,14 +119,8 @@
         </dependency>
         <dependency>
             <groupId>com.github.Somebodys-home</groupId>
-            <artifactId>NMLArmor</artifactId>
-            <version>562f5729fc</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.github.Somebodys-home</groupId>
             <artifactId>DamagePlugin</artifactId>
-            <version>d70dadd434</version>
+            <version>c2c013a5cb</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>

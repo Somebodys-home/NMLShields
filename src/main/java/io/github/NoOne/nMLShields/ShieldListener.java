@@ -1,7 +1,7 @@
 package io.github.NoOne.nMLShields;
 
-import io.github.Gabriel.damagePlugin.customDamage.CustomDamageEvent;
-import io.github.Gabriel.damagePlugin.customDamage.DamageType;
+import io.github.NoOne.damagePlugin.customDamage.CustomDamageEvent;
+import io.github.NoOne.damagePlugin.customDamage.DamageType;
 import io.github.NoOne.nMLItems.ItemSystem;
 import io.github.NoOne.nMLItems.ItemType;
 import org.bukkit.*;
@@ -61,6 +61,7 @@ public class ShieldListener implements Listener {
             for (Map.Entry<DamageType, Double> entry : damageSplits.entrySet()) {
                 totalDamage += entry.getValue();
             }
+
             guardingSystem.damageBar(player, totalDamage);
         }
     }
