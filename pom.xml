@@ -57,7 +57,6 @@
                                     <artifact>*:*</artifact>
                                     <excludes>
                                         <exclude>META-INF/**</exclude>
-                                        <!-- EXCLUDE any plugin classes from being shaded -->
                                         <exclude>io/github/NoOne/nMLPlayerStats/**</exclude>
                                         <exclude>io/github/Gabriel/damagePlugin/**</exclude>
                                     </excludes>
@@ -73,7 +72,6 @@
                     </execution>
                 </executions>
             </plugin>
-
         </plugins>
     </build>
 
