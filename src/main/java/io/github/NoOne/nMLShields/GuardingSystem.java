@@ -94,7 +94,7 @@ public class GuardingSystem {
     public void damageBar(Player player, double damage) {
         UUID uuid = player.getUniqueId();
         BossBar guardBar = guardBars.get(uuid);
-        int guardStat = profileManager.getPlayerStats(uuid).getGuard();
+        int guardStat = profileManager.getPlayerProfile(uuid).getStats().getGuard();
         double damageFraction = damage / guardStat;
         double newProgress = guardBar.getProgress() - damageFraction;
         double guardbreakDamage = 0;
