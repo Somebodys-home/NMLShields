@@ -26,28 +26,6 @@ public class ShieldListener implements Listener {
         guardingSystem = nmlShields.getGuardingSystem();
     }
 
-    @EventHandler()
-    public void shieldLevelCheck(PlayerItemHeldEvent event) {
-        Player player = event.getPlayer();
-        ItemStack heldItem = player.getInventory().getItem(event.getNewSlot());
-        boolean usable = ItemSystem.isItemUsable(heldItem, player);
-
-        if (heldItem == null || heldItem.getType() == Material.AIR) return;
-        if (!heldItem.hasItemMeta()) return;
-        if (ItemSystem.getItemType(heldItem) == null) return;
-
-        PersistentDataContainer pdc = heldItem.getItemMeta().getPersistentDataContainer();
-
-        if (!pdc.has(ItemSystem.getLevelKey())) return;
-        if (!usable) {
-            player.sendMessage("§c⚠ §nYou are too inexperienced for this item!§r§c ⚠");
-        }
-
-        if (pdc.has(ItemSystem.getOriginalNameKey())) {
-            ItemSystem.updateUnusableItemName(heldItem, usable);
-        }
-    }
-
     @EventHandler(priority = EventPriority.HIGH)
     public void blockIncomingCustomDamage(CustomDamageEvent event) {
         if (event.getTarget() instanceof Player player && player.isBlocking()) {
