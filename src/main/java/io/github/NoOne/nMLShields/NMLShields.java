@@ -16,6 +16,7 @@ public final class NMLShields extends JavaPlugin {
         guardingSystem.start();
 
         getServer().getPluginManager().registerEvents(new ShieldListener(this), this);
+        getCommand("generateShield").setExecutor(new GenerateShieldCommand(this));
     }
 
     @Override

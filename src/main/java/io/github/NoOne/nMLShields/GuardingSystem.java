@@ -35,12 +35,11 @@ public class GuardingSystem {
     }
 
     public void start() {
-        // main task that runs every tick on the server
         playerGuardingTask = Bukkit.getScheduler().runTaskTimer(nmlShields, () -> {
             for (Player player : Bukkit.getOnlinePlayers()) {
                 UUID playerId = player.getUniqueId();
 
-                // give every online player that doesnt have a block bar one
+                // give every online player that doesnt have a guard bar one
                 BossBar bar = guardBars.computeIfAbsent(playerId, id -> {
                     BossBar newBar = Bukkit.createBossBar("Guard", BarColor.WHITE, BarStyle.SOLID);
                     newBar.addPlayer(player);
@@ -50,13 +49,12 @@ public class GuardingSystem {
 
                 // get the cooldown of each player, or 0 if it doesnt exist
                 int cooldown = damageCooldowns.getOrDefault(playerId, 0);
+                BukkitTask regenTask = ongoingRegenTasks.get(playerId); // gets the guard regen task of that player
 
-                BukkitTask regenTask = ongoingRegenTasks.get(playerId); // gets the block regen task of that player
-                // make the player's block bar visible if they're blocking with an offhand shield,
-                // not regenerating block, when the bar is red from being damaged,
+                // make the player's guard bar visible if they're guarding with an offhand shield,
+                // not regenerating guard, when the bar is red from being damaged,
                 // or after it's fully regenerated after the method
                 if (player.isBlocking() || (regenTask != null && !regenTask.isCancelled()) || cooldown > 0 || player.hasMetadata("fully regenerate guard")) {
-
                     bar.addPlayer(player);
                 } else {
                     bar.removePlayer(player);
@@ -129,22 +127,21 @@ public class GuardingSystem {
         // if that player already has a regen task running, leave
         if (ongoingRegenTasks.containsKey(uuid)) return;
 
-        BossBar blockBar = guardBars.get(uuid);
+        BossBar guardBar = guardBars.get(uuid);
         BukkitTask task = Bukkit.getScheduler().runTaskTimer(nmlShields, () -> { // actual regen task
-            if (blockBar.getProgress() >= 1) {
-                blockBar.setProgress(1);
+            if (guardBar.getProgress() >= 1) {
+                guardBar.setProgress(1);
                 BukkitTask t = ongoingRegenTasks.remove(uuid);
                 if (t != null) t.cancel();
                 return;
             }
-            blockBar.setProgress(Math.min(1, blockBar.getProgress() + 0.003));
+            guardBar.setProgress(Math.min(1, guardBar.getProgress() + 0.003));
         }, 0L, 1L);
 
         ongoingRegenTasks.put(uuid, task); // put the task on the hashmap
     }
 
     public void guardBreak(Player player, double carryoverDamage) {
-        player.sendMessage(carryoverDamage+"");
         Vector knockback = player.getLocation().getDirection().multiply(-2).setY(0);
         ItemStack shield = player.getInventory().getItemInOffHand();
 
@@ -167,9 +164,9 @@ public class GuardingSystem {
 
     public void fullyRegenerateGuard(Player player) {
         UUID uuid = player.getUniqueId();
-        BossBar blockBar = guardBars.get(uuid);
+        BossBar guardBar = guardBars.get(uuid);
 
-        blockBar.setProgress(1);
+        guardBar.setProgress(1);
         player.setMetadata("fully regenerate guard", new FixedMetadataValue(nmlShields, true));
 
         new BukkitRunnable() {

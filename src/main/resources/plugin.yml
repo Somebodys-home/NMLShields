@@ -7,3 +7,7 @@ depend:
   - NMLPlayerStats
 softdepend:
   - DamagePlugin
+commands:
+  generateShield:
+    description: Generates a random shield
+    usage: /<command> <level> <rarity>
