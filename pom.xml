@@ -62,12 +62,6 @@
                                     </excludes>
                                 </filter>
                             </filters>
-                            <relocations>
-                                <relocation>
-                                    <pattern>io.github.Gabriel.menuSystem</pattern>
-                                    <shadedPattern>${shade.prefix}.menuSystem</shadedPattern>
-                                </relocation>
-                            </relocations>
                         </configuration>
                     </execution>
                 </executions>
