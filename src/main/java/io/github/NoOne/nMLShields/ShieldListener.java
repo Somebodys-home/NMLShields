@@ -35,7 +35,7 @@ public class ShieldListener implements Listener {
         guardingSystem = nmlShields.getGuardingSystem();
     }
     
-    @EventHandler(priority = EventPriority.HIGH)
+    @EventHandler(priority = EventPriority.LOWEST)
     public void blockIncomingCustomDamage(CustomDamageEvent event) {
         if (event.getTarget() instanceof Player player && player.isBlocking()) {
             event.setCancelled(true);
