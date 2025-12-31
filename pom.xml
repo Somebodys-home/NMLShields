@@ -58,7 +58,7 @@
                                     <excludes>
                                         <exclude>META-INF/**</exclude>
                                         <exclude>io/github/NoOne/nMLPlayerStats/**</exclude>
-                                        <exclude>io/github/Gabriel/damagePlugin/**</exclude>
+                                        <exclude>io/github/NoOne/damagePlugin/**</exclude>
                                     </excludes>
                                 </filter>
                             </filters>
