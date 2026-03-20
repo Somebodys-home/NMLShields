@@ -1,7 +1,5 @@
 package io.github.NoOne.nMLShields;
 
-import io.github.NoOne.nMLItems.ItemSystem;
-import io.github.NoOne.nMLItems.ItemType;
 import io.github.NoOne.nMLPlayerStats.profileSystem.ProfileManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -12,7 +10,6 @@ import org.bukkit.boss.BossBar;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
-import org.bukkit.metadata.MetadataValue;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
@@ -81,11 +78,12 @@ public class GuardingSystem {
         for (BukkitTask task : ongoingRegenTasks.values()) {
             if (task != null) task.cancel();
         }
-        ongoingRegenTasks.clear();
 
         for (BossBar bar : guardBars.values()) {
             bar.removeAll();
         }
+
+        ongoingRegenTasks.clear();
         guardBars.clear();
     }
 
@@ -125,16 +123,18 @@ public class GuardingSystem {
         UUID uuid = player.getUniqueId();
 
         // if that player already has a regen task running, leave
-        if (ongoingRegenTasks.containsKey(uuid)) return;
+        if (ongoingRegenTasks.containsKey(uuid)) {
+            return;
+        }
 
         BossBar guardBar = guardBars.get(uuid);
         BukkitTask task = Bukkit.getScheduler().runTaskTimer(nmlShields, () -> { // actual regen task
-            if (guardBar.getProgress() >= 1) {
+            if (guardBar.getProgress() >= 1) { // full guard bar
+                ongoingRegenTasks.remove(uuid).cancel();
                 guardBar.setProgress(1);
-                BukkitTask t = ongoingRegenTasks.remove(uuid);
-                if (t != null) t.cancel();
                 return;
             }
+
             guardBar.setProgress(Math.min(1, guardBar.getProgress() + 0.003));
         }, 0L, 1L);
 

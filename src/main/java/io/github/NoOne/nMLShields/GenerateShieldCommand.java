@@ -1,7 +1,7 @@
 package io.github.NoOne.nMLShields;
 
-import io.github.NoOne.nMLItems.ItemRarity;
 import io.github.NoOne.nMLItems.ItemSystem;
+import io.github.NoOne.nMLItems.enums.ItemRarity;
 import io.github.NoOne.nMLItems.itemDictionary.Shields;
 import io.github.NoOne.nMLPlayerStats.profileSystem.ProfileManager;
 import io.github.NoOne.nMLPlayerStats.statSystem.Stats;
@@ -44,6 +44,7 @@ public class GenerateShieldCommand implements CommandExecutor, TabCompleter {
                 }
             }
         }
+
         return true;
     }
 
@@ -58,6 +59,7 @@ public class GenerateShieldCommand implements CommandExecutor, TabCompleter {
                     .filter(s -> s.toLowerCase().startsWith(args[1].toLowerCase()))
                     .collect(Collectors.toList());
         }
+
         return List.of();
     }
 }
