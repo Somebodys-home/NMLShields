@@ -8,6 +8,8 @@ depend:
   - NMLAbilities
 softdepend:
   - DamagePlugin
+loadbefore:
+  - NMLAbilities
 commands:
   generateShield:
     description: Generates a random shield
