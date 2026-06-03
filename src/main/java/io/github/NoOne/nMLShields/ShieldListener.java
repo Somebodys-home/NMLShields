@@ -20,7 +20,7 @@ public class ShieldListener implements Listener {
     
     @EventHandler(priority = EventPriority.LOWEST)
     public void blockIncomingCustomDamage(CustomDamageEvent event) {
-        if (event.getTarget() instanceof Player player && player.isBlocking()) {
+        if (event.getTarget() instanceof Player player && player.isBlocking() && player.getNoDamageTicks() == 0) {
             event.setCancelled(true);
 
             double totalDamage = 0;

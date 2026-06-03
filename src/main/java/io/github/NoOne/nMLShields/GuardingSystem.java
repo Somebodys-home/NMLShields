@@ -143,7 +143,8 @@ public class GuardingSystem {
 
     public void guardBreak(Player player, double carryoverDamage) {
         Vector knockback = player.getLocation().getDirection().multiply(-2).setY(0);
-        ItemStack shield = player.getInventory().getItemInOffHand();
+        ItemStack mainHand = player.getInventory().getItemInMainHand();
+        ItemStack offHand = player.getInventory().getItemInOffHand();
 
         player.sendTitle("§c⚠ GUARD BREAK! ⚠", "", 10, 30, 5);
         guardBars.get(player.getUniqueId()).setTitle("§cGuard Break!");
@@ -152,11 +153,13 @@ public class GuardingSystem {
         player.setNoDamageTicks(0);
         player.damage(carryoverDamage);
         player.setVelocity(knockback);
+        player.getInventory().setItemInMainHand(new ItemStack(Material.AIR));
         player.getInventory().setItemInOffHand(new ItemStack(Material.AIR));
 
         Bukkit.getScheduler().runTaskLater(nmlShields, () -> {
             player.setVelocity(player.getVelocity().setY(0)); // no vertical knockback from damage
-            player.getInventory().setItemInOffHand(shield);
+            player.getInventory().setItemInMainHand(mainHand);
+            player.getInventory().setItemInOffHand(offHand);
         }, 2L);
 
         player.setCooldown(Material.SHIELD, 40);
