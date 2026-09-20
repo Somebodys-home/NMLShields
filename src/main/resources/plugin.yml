@@ -10,7 +10,3 @@ softdepend:
   - DamagePlugin
 loadbefore:
   - NMLAbilities
-commands:
-  generateShield:
-    description: Generates a random shield
-    usage: /<command> <level> <rarity>
