@@ -1,7 +1,9 @@
 name: NMLShields
-version: '1.0'
+version: '${version}'
+
 main: io.github.NoOne.nMLShields.NMLShields
-api-version: '26.1'
+api-version: '26.3'
+load: POSTWORLD
 depend:
   - NMLItems
   - NMLPlayerStats
