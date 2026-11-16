@@ -1,6 +1,7 @@
 package io.github.NoOne.nMLShields;
 
 import io.github.NoOne.nMLPlayerStats.profileSystem.ProfileManager;
+import io.github.NoOne.nMLPlayerStats.statSystem.PlayerStat;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -90,7 +91,7 @@ public class GuardingSystem {
     public void damageBar(Player player, double damage) {
         UUID uuid = player.getUniqueId();
         BossBar guardBar = guardBars.get(uuid);
-        int guardStat = profileManager.getPlayerProfile(uuid).getStats().getGuard();
+        int guardStat = profileManager.getStats(uuid).getIntStatValue(PlayerStat.GUARD);
         double damageFraction = damage / guardStat;
         double newProgress = guardBar.getProgress() - damageFraction;
         double guardbreakDamage = 0;
@@ -135,7 +136,7 @@ public class GuardingSystem {
                 return;
             }
 
-            guardBar.setProgress(Math.min(1, guardBar.getProgress() + 0.003));
+            guardBar.setProgress(Math.min(1, guardBar.getProgress() + .003)); // guard regens by 6% / second (.3% / tick)
         }, 0L, 1L);
 
         ongoingRegenTasks.put(uuid, task); // put the task on the hashmap

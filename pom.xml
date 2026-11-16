@@ -89,19 +89,19 @@
         <dependency>
             <groupId>com.github.Somebodys-home</groupId>
             <artifactId>NMLPlayerStats</artifactId>
-            <version>420295a785</version>
+            <version>610edb810d</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.github.Somebodys-home</groupId>
             <artifactId>NMLItems</artifactId>
-            <version>1bbcb53746</version>
+            <version>9a510e7f95</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.github.Somebodys-home</groupId>
-            <artifactId>DamagePlugin</artifactId>
-            <version>8a0e2e4e7a</version>
+            <artifactId>NMLDamages</artifactId>
+            <version>f718b19666</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
