@@ -1,6 +1,6 @@
 package io.github.NoOne.nMLShields;
 
-import io.github.NoOne.nMLPlayerStats.profileSystem.ProfileManager;
+import io.github.NoOne.nMLPlayerStats.StatConfigManager;
 import io.github.NoOne.nMLPlayerStats.statSystem.PlayerStat;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -20,16 +20,16 @@ import java.util.UUID;
 
 public class GuardingSystem {
     private NMLShields nmlShields;
-    private ProfileManager profileManager;
+    private StatConfigManager statConfigManager;
     private BukkitTask playerGuardingTask;
-    private final HashMap<UUID, BossBar> guardBars = new HashMap<>();
-    private final HashMap<UUID, BukkitTask> ongoingRegenTasks = new HashMap<>();
-    private final HashMap<UUID, Integer> damageCooldowns = new HashMap<>();
+    private HashMap<UUID, BossBar> guardBars = new HashMap<>();
+    private HashMap<UUID, BukkitTask> ongoingRegenTasks = new HashMap<>();
+    private HashMap<UUID, Integer> damageCooldowns = new HashMap<>();
     private static int regenCooldown = 40;
 
     public GuardingSystem(NMLShields nmlShields) {
         this.nmlShields = nmlShields;
-        profileManager = nmlShields.getProfileManager();
+        statConfigManager = nmlShields.getStatConfigManager();
     }
 
     public void start() {
@@ -91,7 +91,7 @@ public class GuardingSystem {
     public void damageBar(Player player, double damage) {
         UUID uuid = player.getUniqueId();
         BossBar guardBar = guardBars.get(uuid);
-        int guardStat = profileManager.getStats(uuid).getIntStatValue(PlayerStat.GUARD);
+        int guardStat = statConfigManager.getStats(uuid).getIntStatValue(PlayerStat.GUARD);
         double damageFraction = damage / guardStat;
         double newProgress = guardBar.getProgress() - damageFraction;
         double guardbreakDamage = 0;

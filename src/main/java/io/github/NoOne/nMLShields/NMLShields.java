@@ -1,16 +1,16 @@
 package io.github.NoOne.nMLShields;
 
 import io.github.NoOne.nMLPlayerStats.NMLPlayerStats;
-import io.github.NoOne.nMLPlayerStats.profileSystem.ProfileManager;
+import io.github.NoOne.nMLPlayerStats.StatConfigManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public final class NMLShields extends JavaPlugin {
-    private ProfileManager profileManager;
+    private StatConfigManager statConfigManager;
     private GuardingSystem guardingSystem;
 
     @Override
     public void onEnable() {
-        profileManager = JavaPlugin.getPlugin(NMLPlayerStats.class).getProfileManager();
+        statConfigManager = JavaPlugin.getPlugin(NMLPlayerStats.class).getStatConfigManager();
 
         guardingSystem = new GuardingSystem(this);
         guardingSystem.start();
@@ -23,8 +23,8 @@ public final class NMLShields extends JavaPlugin {
         guardingSystem.stop();
     }
 
-    public ProfileManager getProfileManager() {
-        return profileManager;
+    public StatConfigManager getStatConfigManager() {
+        return statConfigManager;
     }
 
     public GuardingSystem getGuardingSystem() {
